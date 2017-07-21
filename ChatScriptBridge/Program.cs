@@ -9,6 +9,7 @@ namespace ChatScriptBridge
     class Program
     {
         private DiscordSocketClient _client;
+        private ChatScriptClient _cs;
         static void Main(string[] args)
         {
             string token = GetToken();
@@ -18,6 +19,7 @@ namespace ChatScriptBridge
 
         public async Task MainAsync(string token)
         {
+            _cs = new ChatScriptClient("GodBot", "localhost");
             _client = new DiscordSocketClient();
 
             _client.Log += Log;
@@ -28,14 +30,21 @@ namespace ChatScriptBridge
 
 
             //Block this task untill the program is closed
-            await Task.Delay(-1);
+            await SimpleConsoleQuit();
+            await _client.LogoutAsync();
         }
 
+        /// <summary>
+        /// Handel Discord msg recieved.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         private async Task MessageRecieved(SocketMessage msg)
         {
-            if (msg.Content.Equals("!ping"))
+            //Limits the bot to operating only in the channel mentioned.
+            if (msg.Channel.Name.Equals("Lounge"))
             {
-                await msg.Channel.SendMessageAsync("Pong! Hellow World!");
+                await msg.Channel.SendMessageAsync(_cs.GetBotResponse(msg.Content, msg.Author.Username));
             }
         }
 
@@ -48,6 +57,19 @@ namespace ChatScriptBridge
         {
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Simple exit for App, waits for the q key to be pressed.
+        /// </summary>
+        /// <returns></returns>
+        private Task SimpleConsoleQuit()
+        {
+            while(true)
+            {
+                if(Console.ReadLine() == "q")
+                    return Task.CompletedTask;
+            }
         }
 
         /// <summary>
