@@ -41,10 +41,13 @@ namespace ChatScriptBridge
         /// <returns></returns>
         private async Task MessageRecieved(SocketMessage msg)
         {
+            Console.WriteLine(msg.Content);
             //Limits the bot to operating only in the channel mentioned.
-            if (msg.Channel.Name.Equals("Lounge"))
+            //if (msg.Channel.Name.Equals("bot-shennanigans"))
+            if (msg.Content == "!ping")
             {
-                await msg.Channel.SendMessageAsync(_cs.GetBotResponse(msg.Content, msg.Author.Username));
+                //await msg.Channel.SendMessageAsync(_cs.GetBotResponse(msg.Content, msg.Author.Username));
+                await msg.Channel.SendMessageAsync("!pong");
             }
         }
 
