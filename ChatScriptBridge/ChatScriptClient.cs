@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ChatScriptBridge
 {
-    class ChatScriptClient
+    public class ChatScriptClient
     {
         public string Bot { get; private set; }
         public string ServerIP { get; private set; }
@@ -20,7 +20,7 @@ namespace ChatScriptBridge
         public string GetBotResponse(string ToBot, string Username = "Default")
         {
             //Format message
-            string imMsg = FormatMessage(Username, ToBot);
+            string inMsg = FormatMessage(Username, ToBot);
 
             //Connect to chatscript
             try
@@ -31,7 +31,7 @@ namespace ChatScriptBridge
                     clt.ConnectAsync("localhost", 1024).Wait();
                     NetworkStream stream = clt.GetStream();
 
-                    byte[] message = Encoding.ASCII.GetBytes(ToBot);
+                    byte[] message = Encoding.ASCII.GetBytes(inMsg);
                     stream.Write(message, 0, message.Length);
 
                     int rsp = stream.Read(response, 0, response.Length);
